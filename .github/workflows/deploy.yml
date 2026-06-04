@@ -1,0 +1,60 @@
+# Ultra-Uni-Cloud Global Edge Deployment Pipeline
+# Original Architecture by Darion Kellar
+
+name: Ultra-Uni-Cloud CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-multi-runtime:
+    name: Compile Core Subsystems
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Go Toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+          
+      - name: Setup Rust Toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          
+      - name: Setup C/C++ Build Environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential gcc g++ cmake
+
+      - name: Make Compile Script Executable
+        run: chmod +x build-scripts/compile-logic.sh
+
+      - name: Execute Unified Compile Logic
+        run: ./build-scripts/compile-logic.sh
+
+      - name: Archive Tier I Artifacts (DNS & TLS)
+        uses: actions/upload-artifact@v4
+        with:
+          name: tier-1-routing-binaries
+          path: |
+            Tier-I-Routing-Compute/core-cdn-routing/dns-resolver
+            Tier-I-Routing-Compute/shared-utils/tls-termination
+
+      - name: Archive Tier I Artifacts (Isolate Runtime)
+        uses: actions/upload-artifact@v4
+        with:
+          name: tier-1-compute-binaries
+          path: Tier-I-Routing-Compute/edge-compute-runtime/v8-isolate-pool
+
+      - name: Archive Tier II Artifacts (WAAP Engine)
+        uses: actions/upload-artifact@v4
+        with:
+          name: tier-2-security-binaries
+          path: Tier-II-Security-Trust/security-shield-waap/inspection-engine
