@@ -1,0 +1,10 @@
+{
+  "name": "ultra-uni-cloud",
+  "version": "1.0.0",
+  "description": "Ultra-Uni-Cloud: A unified, high-performance edge infrastructure framework.",
+  "author": "Darion Kellar",
+  "license": "MIT",
+  "workspaces": [
+    "Tier-II-Security-Trust/identity-services"
+  ]
+}
