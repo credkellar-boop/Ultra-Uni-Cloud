@@ -1,0 +1,8 @@
+// Anycast Network Service: Global Route Announcement
+package anycast
+
+func AnnounceService(serviceID string, region string) {
+    // Announce service endpoint via BGP to nearest edge PoP
+    // Ensures global visibility for the Ultra-Uni-Cloud
+    BGP.Advertise(serviceID, region, TTL_INFINITY)
+}
