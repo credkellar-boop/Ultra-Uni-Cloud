@@ -1,0 +1,8 @@
+{
+  "waf_ruleset": {
+    "sql_injection": "enabled",
+    "xss_protection": "enabled",
+    "exploit_shield": "strict",
+    "action": "drop_and_log"
+  }
+}
