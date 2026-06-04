@@ -1,4 +1,7 @@
-name: Global Edge Deployment Pipeline
+# Ultra-Uni-Cloud Global Edge Deployment Pipeline
+# Original Architecture by Darion Kellar
+
+name: Ultra-Uni-Cloud CI/CD Pipeline
 
 on:
   push:
@@ -7,22 +10,51 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+  build-multi-runtime:
+    name: Compile Core Subsystems
+    runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.21'
+      - name: Setup Go Toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+          
+      - name: Setup Rust Toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          
+      - name: Setup C/C++ Build Environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential gcc g++ cmake
 
-    - name: Set up Rust
-      uses: actions/rust-toolchain@stable
+      - name: Make Compile Script Executable
+        run: chmod +x Tier-III-Infrastructure/build-scripts/compile-logic.sh
 
-    - name: Validate System Compilation
-      run: |
-        echo "Building Tier-I, II, and III modules concurrently..."
-        # Execution script hooks go here
+      - name: Execute Unified Compile Logic
+        run: ./Tier-III-Infrastructure/build-scripts/compile-logic.sh
+
+      - name: Archive Tier I Artifacts (DNS & TLS)
+        uses: actions/upload-artifact@v4
+        with:
+          name: tier-1-routing-binaries
+          path: |
+            Tier-I-Routing-Compute/core-cdn-routing/dns-resolver
+            Tier-I-Routing-Compute/shared-utils/tls-termination
+
+      - name: Archive Tier I Artifacts (Isolate Runtime)
+        uses: actions/upload-artifact@v4
+        with:
+          name: tier-1-compute-binaries
+          path: Tier-I-Routing-Compute/edge-compute-runtime/v8-isolate-pool
+
+      - name: Archive Tier II Artifacts (WAAP Engine)
+        uses: actions/upload-artifact@v4
+        with:
+          name: tier-2-security-binaries
+          path: Tier-II-Security-Trust/security-shield-waap/inspection-engine
