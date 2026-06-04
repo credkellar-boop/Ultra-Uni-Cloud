@@ -18,3 +18,7 @@ dns-resolver
 # Environment
 .env
 .DS_Store
+
+# Infrastructure
+/secrets/
+/logs/
