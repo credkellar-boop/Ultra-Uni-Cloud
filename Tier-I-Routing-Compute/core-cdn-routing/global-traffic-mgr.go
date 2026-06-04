@@ -115,3 +115,10 @@ func printRoutingTable() {
 		fmt.Printf(" -> %s : %s\n", node.URL, status)
 	}
 }
+
+func updateSharedStatus(node *RpcNode) {
+    // Logic: Write the healthy node's IP to /tmp/ultra-uni-cloud.active
+    // This allows the Rust DNS resolver to immediately know where to route
+    statusData := fmt.Sprintf("%s|%v", node.URL, node.IsActive)
+    _ = os.WriteFile("/tmp/ultra-uni-cloud.active", []byte(statusData), 0644)
+}
