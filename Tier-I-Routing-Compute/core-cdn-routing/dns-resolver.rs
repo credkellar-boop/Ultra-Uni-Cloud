@@ -106,3 +106,16 @@ fn main() -> std::io::Result<()> {
         thread::park();
     }
 }
+
+use std::fs;
+
+fn get_active_node_ip() -> [u8; 4] {
+    // Read the file managed by the Traffic Manager
+    let data = fs::read_to_string("/tmp/ultra-uni-cloud.active").unwrap_or_default();
+    
+    // If the node is marked active, return the IP; otherwise, return a safe failover IP
+    if data.contains("true") {
+        return [104, 18, 12, 50]; // Primary healthy IP
+    }
+    return [127, 0, 0, 1]; // Failover / Loopback
+}
