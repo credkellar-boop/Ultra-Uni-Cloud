@@ -1,0 +1,18 @@
+{
+  "firewall_profile": "Ultra-Uni-Cloud-WAAP-Default",
+  "version": "1.0.0",
+  "global_rules": [
+    {
+      "id": 4001,
+      "name": "Block-SQL-Injection-Patterns",
+      "action": "BLOCK",
+      "match": "SELECT|UNION|INSERT|DROP|--|OR 1=1"
+    },
+    {
+      "id": 4002,
+      "name": "Block-Cross-Site-Scripting-XSS",
+      "action": "CHALLENGE",
+      "match": "<script>|javascript:|onerror="
+    }
+  ]
+}
