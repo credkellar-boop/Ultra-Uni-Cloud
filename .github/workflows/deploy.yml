@@ -19,22 +19,24 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.21'
-          
+
       - name: Setup Rust Toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
-          
+
       - name: Setup C/C++ Build Environment
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential gcc g++ cmake
 
       - name: Make Compile Script Executable
-        run: chmod +x build-scripts/compile-logic.sh
+        # FIXED PATH: Updated to reference the existing directory
+        run: chmod +x shared-utils/compile-logic.sh
 
       - name: Execute Unified Compile Logic
-        run: ./build-scripts/compile-logic.sh
+        # FIXED PATH: Updated to reference the existing directory
+        run: ./shared-utils/compile-logic.sh
 
       - name: Archive Tier I Artifacts (DNS & TLS)
         uses: actions/upload-artifact@v4
@@ -54,4 +56,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tier-2-security-binaries
-          path: Tier-II-Security-Trust/security-shield-waap/inspection-engine
+          path: Tier-II-Security-Trust/security-shield-waap/waap-engine
