@@ -1,6 +1,3 @@
-# Ultra-Uni-Cloud Global Edge Deployment Pipeline
-# Original Architecture by Darion Kellar
-
 name: Ultra-Uni-Cloud CI/CD Pipeline
 
 on:
